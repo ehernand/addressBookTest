@@ -13,7 +13,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     // Let Spring handle the exception, we just override the status code
     @ExceptionHandler(ContactNotFoundException.class)
-    public void springHandleNotFound(HttpServletResponse response) throws IOException {
+    public void contactNotFound(HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.NOT_FOUND.value());
+    }
+
+    @ExceptionHandler(EventNotFoundException.class)
+    public void eventNotFound(HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.NOT_FOUND.value());
     }
 
