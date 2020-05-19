@@ -15,6 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -37,7 +38,7 @@ public class Contact {
     @NotNull
     private String email;
 
-    private LocalDate dateOfBirth;
+    private LocalDateTime dateOfBirth;
 
     private Boolean active;
 
