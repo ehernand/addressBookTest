@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,24 +62,39 @@ class ContactServiceImplTest {
         //then
         assertNotNull(result);
         assertEquals(contactTest.getId(), result.getId());
-        //verify(contactRepository).save(any());
+        verify(contactRepository).save(any());
     }
 
     @Test
-    @Disabled
-    void findAll() {
+    void findAllWhenEmpty() {
         //given
-        List<Contact> contacts = new ArrayList<>();
-        contacts.add(contactTest);
+        List<Contact> contacts = Collections.emptyList();
         Page<Contact> pagedResponse = new PageImpl(contacts);
 
         //when
         //when(contactRepository.findAll(any())).thenReturn(pagedResponse);
-        //when(contactRepository.findAll()).thenReturn(pagedResponse);
+        when(contactRepository.findAll()).thenReturn(Collections.emptyList());
         Page<Contact> results = contactService.findAll(pageable);
 
         //then
-        assertNotNull(results);
+        //assertNotNull(results);
+        assertFalse(results.isEmpty());
+        verify(contactRepository).findAll();
+    }
+
+    @Test
+    void findAll() {
+        //given
+        List<Contact> contacts = Arrays.asList(contactTest);
+        Page<Contact> pagedResponse = new PageImpl(contacts);
+
+        //when
+        //when(contactRepository.findAll(any())).thenReturn(pagedResponse);
+        //when(contactRepository.findAll(any())).thenReturn(pagedResponse);
+        Page<Contact> results = contactService.findAll(pageable);
+
+        //then
+        //assertNotNull(results);
         assertFalse(results.isEmpty());
         verify(contactRepository).findAll();
     }
