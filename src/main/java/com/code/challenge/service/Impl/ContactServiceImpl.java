@@ -43,7 +43,6 @@ public class ContactServiceImpl implements ContactService {
      * @return the list of entities.
      */
     @Override
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Page<Contact> findAll(Pageable pageable) {
         log.debug("Request to get all Contacts");
         return contactRepository.findAll(pageable);
@@ -56,7 +55,6 @@ public class ContactServiceImpl implements ContactService {
      * @return the entity.
      */
     @Override
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Optional<Contact> findOne(Long id) {
         log.debug("Request to get Contact : {}", id);
         return contactRepository.findById(id);

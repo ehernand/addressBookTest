@@ -55,7 +55,7 @@ public class EventController {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping(REST_URI_PREFIX)
-    public ResponseEntity<Event> create(@Valid @RequestBody Event event) throws URISyntaxException {
+    public ResponseEntity<Event> createEvent(@Valid @RequestBody Event event) throws URISyntaxException {
         log.debug("REST request to save Event : {}", event);
         if (event.getId() != null) {
             throw new ContactNotFoundException("A new event cannot already have an ID");

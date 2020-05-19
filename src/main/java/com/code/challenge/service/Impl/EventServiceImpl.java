@@ -43,7 +43,6 @@ public class EventServiceImpl implements EventService {
      * @return the list of entities.
      */
     @Override
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Page<Event> findAll(Pageable pageable) {
         log.debug("Request to get all Events");
         return eventRepository.findAll(pageable);
@@ -56,7 +55,6 @@ public class EventServiceImpl implements EventService {
      * @return the entity.
      */
     @Override
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Optional<Event> findOne(Long id) {
         log.debug("Request to get Event : {}", id);
         return eventRepository.findById(id);

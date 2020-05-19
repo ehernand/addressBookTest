@@ -3,7 +3,6 @@ package com.code.challenge.service.Impl;
 import com.code.challenge.domain.Event;
 import com.code.challenge.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,7 +13,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,26 +58,40 @@ class EventServiceImplTest {
         //then
         assertNotNull(result);
         assertEquals(eventTest.getId(), result.getId());
-        //verify(contactRepository).save(any());
+        verify(eventRepository).save(any());
     }
 
+
     @Test
-    @Disabled
-    void findAll() {
+    void findAllWhenEmpty() {
         //given
-        List<Event> events = new ArrayList<>();
-        events.add(eventTest);
+        List<Event> events = Collections.emptyList();
         Page<Event> pagedResponse = new PageImpl(events);
 
         //when
-        //when(contactRepository.findAll(any())).thenReturn(pagedResponse);
-        //when(contactRepository.findAll()).thenReturn(pagedResponse);
+        when(eventRepository.findAll(pageable)).thenReturn(pagedResponse);
+        Page<Event> results = eventServiceService.findAll(pageable);
+
+        //then
+        assertNotNull(results);
+        assertTrue(results.isEmpty());
+        verify(eventRepository).findAll(pageable);
+    }
+
+    @Test
+    void findAll() {
+        //given
+        List<Event> events = Arrays.asList(eventTest);
+        Page<Event> pagedResponse = new PageImpl(events);
+
+        //when
+        when(eventRepository.findAll(pageable)).thenReturn(pagedResponse);
         Page<Event> results = eventServiceService.findAll(pageable);
 
         //then
         assertNotNull(results);
         assertFalse(results.isEmpty());
-        verify(eventRepository).findAll();
+        verify(eventRepository).findAll(pageable);
     }
 
     @Test

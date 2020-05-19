@@ -3,7 +3,6 @@ package com.code.challenge.service.Impl;
 import com.code.challenge.domain.Contact;
 import com.code.challenge.repository.ContactRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -41,13 +39,16 @@ class ContactServiceImplTest {
     Pageable pageable;
     Long contactTestId = 1L;
     String contactTestFirstName = "John";
+    String contactTestLastName = "Smith";
+    String contactTestEmail = "test@test.com";
 
     @BeforeEach
     void setUp() {
         contactTest = new Contact();
         contactTest.setId(contactTestId);
         contactTest.setFirstName(contactTestFirstName);
-
+        contactTest.setLastName(contactTestLastName);
+        contactTest.setEmail(contactTestEmail);
         pageable = PageRequest.of(2, 20);
     }
 
@@ -72,14 +73,13 @@ class ContactServiceImplTest {
         Page<Contact> pagedResponse = new PageImpl(contacts);
 
         //when
-        //when(contactRepository.findAll(any())).thenReturn(pagedResponse);
-        when(contactRepository.findAll()).thenReturn(Collections.emptyList());
+        when(contactRepository.findAll(pageable)).thenReturn(pagedResponse);
         Page<Contact> results = contactService.findAll(pageable);
 
         //then
-        //assertNotNull(results);
-        assertFalse(results.isEmpty());
-        verify(contactRepository).findAll();
+        assertNotNull(results);
+        assertTrue(results.isEmpty());
+        verify(contactRepository).findAll(pageable);
     }
 
     @Test
@@ -89,14 +89,13 @@ class ContactServiceImplTest {
         Page<Contact> pagedResponse = new PageImpl(contacts);
 
         //when
-        //when(contactRepository.findAll(any())).thenReturn(pagedResponse);
-        //when(contactRepository.findAll(any())).thenReturn(pagedResponse);
+        when(contactRepository.findAll(pageable)).thenReturn(pagedResponse);
         Page<Contact> results = contactService.findAll(pageable);
 
         //then
-        //assertNotNull(results);
+        assertNotNull(results);
         assertFalse(results.isEmpty());
-        verify(contactRepository).findAll();
+        verify(contactRepository).findAll(pageable);
     }
 
     @Test
