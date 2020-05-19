@@ -61,8 +61,9 @@ public class EventController {
             throw new ContactNotFoundException("A new event cannot already have an ID");
         }
         Event result = eventService.save(event);
-        return ResponseEntity.created(new URI("/v1/events/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+        return ResponseEntity.created(new URI(REST_URI_PREFIX + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true,
+                        ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
@@ -83,7 +84,8 @@ public class EventController {
         }
         Event result = eventService.save(event);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, event.getId().toString()))
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
+                        ENTITY_NAME, event.getId().toString()))
                 .body(result);
     }
 
@@ -111,8 +113,13 @@ public class EventController {
     @GetMapping(REST_URI_PREFIX + "/{id}")
     public ResponseEntity<Event> get(@PathVariable Long id) {
         log.debug("REST request to get Event: {}", id);
-        Optional<Event> event = eventService.findOne(id);
-        return ResponseEntity.ok().body(event.get());
+        Optional<Event> result = eventService.findOne(id);
+        if (result.isPresent()) {
+            Optional<Event> event = eventService.findOne(id);
+            return ResponseEntity.ok().body(event.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -124,8 +131,13 @@ public class EventController {
     @DeleteMapping(REST_URI_PREFIX + "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete Event: {}", id);
-        eventService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName,
-                true, ENTITY_NAME, id.toString())).build();
+        Optional<Event> result = eventService.findOne(id);
+        if (result.isPresent()) {
+            eventService.delete(id);
+            return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName,
+                    true, ENTITY_NAME, id.toString())).build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

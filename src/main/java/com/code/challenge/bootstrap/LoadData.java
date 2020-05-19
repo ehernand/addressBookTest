@@ -61,7 +61,7 @@ public class LoadData implements CommandLineRunner {
         batman.setEvents(events);
         spyderman.setEvents(events);
         //contactService.save(batman);
-        contactService.save(spyderman);
+        //contactService.save(spyderman);
     }
 
 }

@@ -54,14 +54,15 @@ public class ContactController {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping(REST_URI_PREFIX)
-    public ResponseEntity<Contact> create(@Valid @RequestBody Contact contact) throws URISyntaxException {
+    public ResponseEntity<Contact> createContact(@Valid @RequestBody Contact contact) throws URISyntaxException {
         log.debug("REST request to save Contact : {}", contact);
         if (contact.getId() != null) {
             throw new ContactNotFoundException("A new contact cannot already have an ID");
         }
         Contact result = contactService.save(contact);
-        return ResponseEntity.created(new URI("/v1/contacts/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+        return ResponseEntity.created(new URI(REST_URI_PREFIX + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true,
+                        ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
@@ -75,14 +76,15 @@ public class ContactController {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping(REST_URI_PREFIX)
-    public ResponseEntity<Contact> update(@Valid @RequestBody Contact contact) throws URISyntaxException {
+    public ResponseEntity<Contact> updateContact(@Valid @RequestBody Contact contact) throws URISyntaxException {
         log.debug("REST request to update Contact : {}", contact);
         if (contact.getId() == null) {
             throw new ContactNotFoundException("Invalid id");
         }
         Contact result = contactService.save(contact);
         return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, contact.getId().toString()))
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
+                        ENTITY_NAME, contact.getId().toString()))
                 .body(result);
     }
 
@@ -93,7 +95,7 @@ public class ContactController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of contacts in body.
      */
     @GetMapping(REST_URI_PREFIX)
-    public ResponseEntity<List<Contact>> getAll(Pageable pageable) {
+    public ResponseEntity<List<Contact>> getAllContacts(Pageable pageable) {
         log.debug("REST request to get a page of Contacts");
         Page<Contact> page = contactService.findAll(pageable);
         //HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -108,10 +110,15 @@ public class ContactController {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the contact, or with status {@code 404 (Not Found)}.
      */
     @GetMapping(REST_URI_PREFIX + "/{id}")
-    public ResponseEntity<Contact> get(@PathVariable Long id) {
+    public ResponseEntity<Contact> getContact(@PathVariable Long id) {
         log.debug("REST request to get Contact : {}", id);
-        Optional<Contact> contact = contactService.findOne(id);
-        return ResponseEntity.ok().body(contact.get());
+        Optional<Contact> result = contactService.findOne(id);
+        if (result.isPresent()) {
+            Optional<Contact> contact = contactService.findOne(id);
+            return ResponseEntity.ok().body(contact.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -121,10 +128,16 @@ public class ContactController {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping(REST_URI_PREFIX + "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
         log.debug("REST request to delete Contact : {}", id);
-        contactService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName,
-                true, ENTITY_NAME, id.toString())).build();
+        Optional<Contact> result = contactService.findOne(id);
+        if (result.isPresent()) {
+            contactService.delete(id);
+            return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName,
+                    true, ENTITY_NAME, id.toString())).build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 }
