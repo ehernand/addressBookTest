@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import util.HeaderUtil;
 
 import javax.validation.Valid;
@@ -46,7 +48,7 @@ public class ContactController {
     }
 
     /**
-     * {@code POST /contacts} : Create a new contact.
+     * {@code POST /contacts}: Create a new contact.
      *
      * @param contact the contact to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new contact,
@@ -55,7 +57,7 @@ public class ContactController {
      */
     @PostMapping(REST_URI_PREFIX)
     public ResponseEntity<Contact> createContact(@Valid @RequestBody Contact contact) throws URISyntaxException {
-        log.debug("REST request to save Contact : {}", contact);
+        log.debug("REST request to save Contact: {}", contact);
         if (contact.getId() != null) {
             throw new ContactNotFoundException("A new contact cannot already have an ID");
         }
@@ -67,7 +69,7 @@ public class ContactController {
     }
 
     /**
-     * {@code PUT /contacts} : Updates an existing contact.
+     * {@code PUT /contacts}: Updates an existing contact.
      *
      * @param contact the contact to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated contact,
@@ -77,7 +79,7 @@ public class ContactController {
      */
     @PutMapping(REST_URI_PREFIX)
     public ResponseEntity<Contact> updateContact(@Valid @RequestBody Contact contact) throws URISyntaxException {
-        log.debug("REST request to update Contact : {}", contact);
+        log.debug("REST request to update Contact: {}", contact);
         if (contact.getId() == null) {
             throw new ContactNotFoundException("Invalid id");
         }
@@ -89,7 +91,7 @@ public class ContactController {
     }
 
     /**
-     * {@code GET /contacts} : get all the contacts.
+     * {@code GET /contacts}: get all the contacts.
      *
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of contacts in body.
@@ -104,14 +106,14 @@ public class ContactController {
     }
 
     /**
-     * {@code GET /contacts/:id} : get the "id" contact.
+     * {@code GET /contacts/:id}: get the "id" contact.
      *
      * @param id the id of the contact to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the contact, or with status {@code 404 (Not Found)}.
      */
     @GetMapping(REST_URI_PREFIX + "/{id}")
     public ResponseEntity<Contact> getContact(@PathVariable Long id) {
-        log.debug("REST request to get Contact : {}", id);
+        log.debug("REST request to get Contact: {}", id);
         Optional<Contact> result = contactService.findOne(id);
         if (result.isPresent()) {
             Optional<Contact> contact = contactService.findOne(id);
@@ -122,14 +124,14 @@ public class ContactController {
     }
 
     /**
-     * {@code DELETE /contacts/:id} : delete the "id" contact.
+     * {@code DELETE /contacts/:id}: delete the "id" contact.
      *
      * @param id the id of the contact to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping(REST_URI_PREFIX + "/{id}")
     public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
-        log.debug("REST request to delete Contact : {}", id);
+        log.debug("REST request to delete Contact: {}", id);
         Optional<Contact> result = contactService.findOne(id);
         if (result.isPresent()) {
             contactService.delete(id);
@@ -139,5 +141,20 @@ public class ContactController {
             return ResponseEntity.notFound().build();
         }
 
+    }
+
+    /**
+     * {@code POST /contacts/import}: Create new contacts as per importing from file.
+     *
+     * @param file with data.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new contacts,
+     * or with status {@code 400 (Bad Request)} if the file has some issue.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PostMapping(REST_URI_PREFIX + "/import")
+    public ResponseEntity<List<Contact>> importContacts(@RequestParam("file") MultipartFile file) throws URISyntaxException, Exception {
+        log.debug("REST request to imports contacts form file: {}", file.getName());
+        List<Contact> result = contactService.importContacts(file);
+        return ResponseEntity.ok().body(result);
     }
 }

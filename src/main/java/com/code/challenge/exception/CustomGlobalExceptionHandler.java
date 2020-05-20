@@ -22,10 +22,14 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         response.sendError(HttpStatus.NOT_FOUND.value());
     }
 
-    /*
-    @ExceptionHandler(BookUnSupportedFieldPatchException.class)
-    public void springUnSupportedFieldPatch(HttpServletResponse response) throws IOException {
-        response.sendError(HttpStatus.METHOD_NOT_ALLOWED.value());
+    @ExceptionHandler(InvalidFileException.class)
+    public void invalidFileOnImport(HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value());
     }
-    */
+
+    @ExceptionHandler(NotSuportedFileException.class)
+    public void invalidFileFormatOnImport(HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value());
+    }
+
 }

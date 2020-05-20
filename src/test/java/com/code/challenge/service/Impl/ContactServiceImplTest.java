@@ -1,7 +1,11 @@
 package com.code.challenge.service.Impl;
 
 import com.code.challenge.domain.Contact;
+import com.code.challenge.exception.InvalidFileException;
+import com.code.challenge.exception.NotSuportedFileException;
 import com.code.challenge.repository.ContactRepository;
+import com.code.challenge.service.parsing.ParserService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,6 +36,12 @@ class ContactServiceImplTest {
 
     @Mock
     ContactRepository contactRepository;
+
+    @Mock
+    ParserService parserService;
+
+    @Mock
+    MultipartFile file;
 
     @InjectMocks
     ContactServiceImpl contactService;
@@ -138,4 +149,44 @@ class ContactServiceImplTest {
         verify(contactRepository).deleteById(any());
     }
 
+    @Test
+    void importContacts() throws Exception {
+        //given
+        List<Contact> contacts = Arrays.asList(contactTest);
+
+        //when
+        when(parserService.parseData(any())).thenReturn(contacts);
+
+        List<Contact> results = contactService.importContacts(any());
+
+        //then
+        assertNotNull(results);
+        assertFalse(contacts.isEmpty());
+        verify(parserService).parseData(any());
+        verify(contactRepository).saveAll(any());
+    }
+
+    @Test
+    void importContactsInvalidFile() throws Exception {
+        //given
+
+        //when
+        when(parserService.parseData(null)).thenThrow(InvalidFileException.class);
+
+        Assertions.assertThrows(InvalidFileException.class, () -> {
+            contactService.importContacts(null);
+        });
+    }
+
+    @Test
+    void importContactsInvalidTypeFile() throws Exception {
+        //given
+
+        //when
+        when(parserService.parseData(file)).thenThrow(NotSuportedFileException.class);
+
+        Assertions.assertThrows(NotSuportedFileException.class, () -> {
+            contactService.importContacts(file);
+        });
+    }
 }

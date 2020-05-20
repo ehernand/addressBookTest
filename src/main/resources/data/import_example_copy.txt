@@ -1,0 +1,4 @@
+firstName,lastName,nickName,email
+Emmanuel,Hernandez,Emma,emmanuel.parana@gmail.com
+Diego,Maradona,diego,Diego.maradona@some.com
+Lionel,Messi,Lio,lionel.messi@some.com

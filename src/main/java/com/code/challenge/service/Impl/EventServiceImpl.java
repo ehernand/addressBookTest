@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
+/**
+ * Service for managing {@link com.code.challenge.domain.Event}.
+ */
+
 @Service
 @Transactional
 public class EventServiceImpl implements EventService {

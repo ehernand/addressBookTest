@@ -3,7 +3,10 @@ package com.code.challenge.service;
 import com.code.challenge.domain.Contact;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,4 +44,12 @@ public interface ContactService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    /**
+     * Import contact from file.
+     *
+     * @param file the file with contact to import.
+     * @return the list of entities.
+     */
+    List<Contact> importContacts(MultipartFile file) throws Exception;
 }
