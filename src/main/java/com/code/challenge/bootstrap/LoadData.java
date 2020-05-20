@@ -33,12 +33,12 @@ public class LoadData implements CommandLineRunner {
 
     private void loadContacts() {
         batman.setFirstName("Bruno");
-        batman.setLastName("Dias");
+        batman.setLastName("Diaz");
         batman.setActive(true);
         contactService.save(batman);
 
         spyderman.setFirstName("Peter");
-        spyderman.setLastName("Parcker");
+        spyderman.setLastName("Parker");
         spyderman.setActive(true);
         contactService.save(spyderman);
     }
@@ -46,7 +46,7 @@ public class LoadData implements CommandLineRunner {
     private void loadEvents() {
         Event saturday = new Event();
         saturday.setActive(true);
-        saturday.setLocation("Gotica city");
+        saturday.setLocation("Gotham city");
         saturday.setStartDateTime(LocalDateTime.now());
         saturday.setEndDateTime(LocalDateTime.now());
         Set<Contact> participants = new HashSet<>();
@@ -60,8 +60,6 @@ public class LoadData implements CommandLineRunner {
         events.add(saturday);
         batman.setEvents(events);
         spyderman.setEvents(events);
-        //contactService.save(batman);
-        //contactService.save(spyderman);
     }
 
 }

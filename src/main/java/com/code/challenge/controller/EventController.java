@@ -47,7 +47,7 @@ public class EventController {
     }
 
     /**
-     * {@code POST /events} : Create a new event.
+     * {@code POST /events}: Create a new event.
      *
      * @param event the event to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new event,
@@ -56,7 +56,7 @@ public class EventController {
      */
     @PostMapping(REST_URI_PREFIX)
     public ResponseEntity<Event> createEvent(@Valid @RequestBody Event event) throws URISyntaxException {
-        log.debug("REST request to save Event : {}", event);
+        log.debug("REST request to save Event: {}", event);
         if (event.getId() != null) {
             throw new ContactNotFoundException("A new event cannot already have an ID");
         }
@@ -68,7 +68,7 @@ public class EventController {
     }
 
     /**
-     * {@code PUT /events} : Updates an existing event.
+     * {@code PUT /events}: Updates an existing event.
      *
      * @param event the event to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated event,
@@ -78,7 +78,7 @@ public class EventController {
      */
     @PutMapping(REST_URI_PREFIX)
     public ResponseEntity<Event> update(@Valid @RequestBody Event event) throws URISyntaxException {
-        log.debug("REST request to update Event : {}", event);
+        log.debug("REST request to update Event: {}", event);
         if (event.getId() == null) {
             throw new EventNotFoundException("Invalid id");
         }
@@ -90,7 +90,7 @@ public class EventController {
     }
 
     /**
-     * {@code GET /events} : get all the events.
+     * {@code GET /events}: get all the events.
      *
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of events in body.
@@ -105,7 +105,7 @@ public class EventController {
     }
 
     /**
-     * {@code GET /events/:id} : get the "id" event.
+     * {@code GET /events/:id}: get the "id" event.
      *
      * @param id the id of the event to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the event, or with status {@code 404 (Not Found)}.
@@ -123,7 +123,7 @@ public class EventController {
     }
 
     /**
-     * {@code DELETE /events/:id} : delete the "id" event.
+     * {@code DELETE /events/:id}: delete the "id" event.
      *
      * @param id the id of the event to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.

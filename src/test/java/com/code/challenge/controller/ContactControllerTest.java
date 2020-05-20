@@ -57,18 +57,6 @@ class ContactControllerTest {
         //pageable = PageRequest.of(2, 20);
     }
 
-    /*
-    @Test()
-    void createContact() throws Exception {
-        mockMvc.perform(post("/v1/contacts")
-                .content(Util.asJsonString(contactTest))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.firstName").isEmpty());
-    }
-    */
-
     @Test
     void createContact() throws Exception {
         contactTest.setId(null);
