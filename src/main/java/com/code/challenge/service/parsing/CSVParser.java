@@ -12,11 +12,17 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-    https://mkyong.com/java/how-to-read-and-parse-csv-file-in-java/
+/**
+ * Parser logic for CSV files with Contact objects
  */
 public class CSVParser implements Parser {
 
+    /**
+     * Create Contact object from a csv file.
+     *
+     * @param file the file with contacts to import.
+     * @return List of contact parsed from file.
+     */
     @Override
     public List<Contact> parse(MultipartFile file) throws Exception {
         CSVReader csvReader = null;
@@ -27,7 +33,6 @@ public class CSVParser implements Parser {
             csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
             String[] line;
             while ((line = csvReader.readNext()) != null) {
-                System.out.println("Contact [id= " + line[0] + ", code= " + line[1] + " , name=" + line[2] + "]");
                 results.add(getContactFromLine(line));
             }
         } catch (IOException e) {
@@ -38,12 +43,12 @@ public class CSVParser implements Parser {
     }
 
     private Contact getContactFromLine(String[] line) {
-        Contact row = new Contact();
-        row.setFirstName(line[0]);
-        row.setLastName(line[1]);
-        row.setNickName(line[2]);
-        row.setEmail(line[3]);
-        return row;
+        Contact contact = new Contact();
+        contact.setFirstName(line[0]);
+        contact.setLastName(line[1]);
+        contact.setNickName(line[2]);
+        contact.setEmail(line[3]);
+        return contact;
     }
 
 }
